@@ -53,7 +53,6 @@ app.get('/search', function(req,res){
 })
 
 app.get('/daygainers', function(req,res){
-    if(req.body.symbol != null){
         const uri = `https://query1.finance.yahoo.com/v1/finance/screener/predefined/saved?scrIds=day_gainers&count=50`
         axios.get(uri)
         .then(response =>{
@@ -64,7 +63,7 @@ app.get('/daygainers', function(req,res){
         })
     }
 
-})
+)
 
 app.listen(port, () =>
   console.log(`Server listenning on ${port}`),
