@@ -11,7 +11,6 @@ app.get('/stocks', function(req,res){
         const symbol = req.query.symbol.toUpperCase()
         console.log(symbol)
         const uri = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}`
-        let tempRes
         axios.get(uri)
             .then(response=> {
                 const logoUri = `https://api.api-ninjas.com/v1/logo?ticker=${symbol}`
@@ -39,6 +38,33 @@ app.get('/stocks', function(req,res){
             })
     }
 });
+
+app.get('/search', function(req,res){
+    if(req.body.symbol != null){
+        const uri = `https://query1.finance.yahoo.com/v1/finance/search?q=${req.body.symbol}`
+        axios.get(uri)
+        .then(response =>{
+            res.send(response.data)
+        })
+        .catch(error=>{
+            console.error(error)
+        })
+    }
+})
+
+app.get('/daygainers', function(req,res){
+    if(req.body.symbol != null){
+        const uri = `https://query1.finance.yahoo.com/v1/finance/screener/predefined/saved?scrIds=day_gainers&count=50`
+        axios.get(uri)
+        .then(response =>{
+            res.send(response.data)
+        })
+        .catch(error=>{
+            console.error(error)
+        })
+    }
+
+})
 
 app.listen(port, () =>
   console.log(`Server listenning on ${port}`),
