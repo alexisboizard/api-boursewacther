@@ -56,6 +56,21 @@ app.get('/daygainers', function(req,res){
         const uri = `https://query1.finance.yahoo.com/v1/finance/screener/predefined/saved?scrIds=day_gainers&count=50`
         axios.get(uri)
         .then(response =>{
+            let array = []
+            for (let i = 0; i < response.data.finance.result[0].quotes.length; i++) {
+                array.push(response.data.finance.result[0].quotes[i].symbol)
+                const logoUri = `https://api.api-ninjas.com/v1/logo?ticker=${response.data.finance.result[0].quotes[i].symbol}`
+                const header = {
+                    "X-Api-Key" : "4RUsU+jxeew1Qbf0GiypvA==LNEOrbjRY9HR8KFh",
+                }
+                axios.get(logoUri, {headers : header})
+                    .then(response2=> {
+                        response.data.finance.result[0].quotes[i].longName = response2.data.image
+                    })
+                    .catch(error=>{
+                        console.error(error)
+                    })
+            }
             res.send(response.data)
         })
         .catch(error=>{
