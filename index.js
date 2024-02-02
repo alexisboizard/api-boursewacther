@@ -54,24 +54,41 @@ app.get('/search', function(req,res){
 
 app.get('/daygainers', function(req,res){
         const uri = `https://query1.finance.yahoo.com/v1/finance/screener/predefined/saved?scrIds=day_gainers&count=50`
+        let resArray = []
+        let cpt = 0
         axios.get(uri)
         .then(response =>{
             let array = []
             for (let i = 0; i < response.data.finance.result[0].quotes.length; i++) {
                 array.push(response.data.finance.result[0].quotes[i].symbol)
                 const logoUri = `https://api.api-ninjas.com/v1/logo?ticker=${response.data.finance.result[0].quotes[i].symbol}`
+                console.log(logoUri)
                 const header = {
                     "X-Api-Key" : "4RUsU+jxeew1Qbf0GiypvA==LNEOrbjRY9HR8KFh",
                 }
                 axios.get(logoUri, {headers : header})
                     .then(response2=> {
-                        response.data.finance.result[0].quotes[i].longName = response2.data.image
+                        let newJson = JSON.stringify(response.data.finance.result[0].quotes[i])
+                        newJson = newJson.substring(0, newJson.length - 1)
+                        if(response2.data[0] != null){
+                            newJson += ', "image" :' + JSON.stringify(response2.data[0].image) + '}'
+                        }else[
+                            newJson += ',"name":"null" , "ticker" : "null", "image" : "null"}'
+                        ]
+                        newJson = JSON.parse(newJson)
+                        resArray.push(newJson)
                     })
                     .catch(error=>{
                         console.error(error)
                     })
+                    .finally(() =>{
+                        cpt++
+                        if(cpt === 50){
+                            res.send(resArray)
+                        }
+                    })
             }
-            res.send(response.data)
+            
         })
         .catch(error=>{
             console.error(error)
@@ -83,11 +100,3 @@ app.get('/daygainers', function(req,res){
 app.listen(port, () =>
   console.log(`Server listenning on ${port}`),
 );
-
-function callYahooFinance(symbol){
-
-}
-
-function getLogoOfCompany(symbol){
-
-}
