@@ -9,7 +9,6 @@ app.use(express.json());
 app.get('/stocks', function(req,res){
     if(req.query.symbol != null){
         const symbol = req.query.symbol.toUpperCase()
-        console.log(symbol)
         const uri = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}`
         axios.get(uri)
             .then(response=> {
@@ -62,7 +61,6 @@ app.get('/daygainers', function(req,res){
             for (let i = 0; i < response.data.finance.result[0].quotes.length; i++) {
                 array.push(response.data.finance.result[0].quotes[i].symbol)
                 const logoUri = `https://api.api-ninjas.com/v1/logo?ticker=${response.data.finance.result[0].quotes[i].symbol}`
-                console.log(logoUri)
                 const header = {
                     "X-Api-Key" : "4RUsU+jxeew1Qbf0GiypvA==LNEOrbjRY9HR8KFh",
                 }
@@ -76,6 +74,7 @@ app.get('/daygainers', function(req,res){
                             newJson += ',"name":"null" , "ticker" : "null", "image" : "null"}'
                         ]
                         newJson = JSON.parse(newJson)
+                        delete newJson.firstTradeDateMilliseconds
                         resArray.push(newJson)
                     })
                     .catch(error=>{
