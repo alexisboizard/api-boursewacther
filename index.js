@@ -69,13 +69,20 @@ app.get('/daygainers', function(req,res){
                         let newJson = JSON.stringify(response.data.finance.result[0].quotes[i])
                         newJson = newJson.substring(0, newJson.length - 1)
                         if(response2.data[0] != null){
-                            newJson += ', "image" :' + JSON.stringify(response2.data[0].image) + '}'
+                            newJson += ', "image" :' + JSON.stringify(response2.data[0].image)
                         }else[
-                            newJson += ',"name":"null" , "ticker" : "null", "image" : "null"}'
+                            newJson += ',"name":"null" , "ticker" : "null", "image" : "null"'
                         ]
-                        newJson = JSON.parse(newJson)
-                        delete newJson.firstTradeDateMilliseconds
-                        resArray.push(newJson)
+                        const detailsUri = `https://query1.finance.yahoo.com/v8/finance/chart/${response.data.finance.result[0].quotes[i].symbol}`
+                        axios.get(detailsUri)
+                            .then(response3=>{
+                                const open = response3.data.chart.result[0].indicators.quote[0].open
+                                const close = response3.data.chart.result[0].indicators.quote[0].close
+                                const volume = response3.data.chart.result[0].indicators.quote[0].volume
+                                newJson += ', "open" :' + JSON.stringify(open) + ', "close" :' + JSON.stringify(close) + ', "volume" :' + JSON.stringify(volume) + '}'
+                                newJson = JSON.parse(newJson)
+                                resArray.push(newJson)
+                            })
                     })
                     .catch(error=>{
                         console.error(error)
@@ -95,6 +102,20 @@ app.get('/daygainers', function(req,res){
     }
 
 )
+
+app.get('/test', function(req,res){
+    if(req.query.symbol != null){
+        const symbol = req.query.symbol.toUpperCase()
+        const uri = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}`
+        axios.get(uri)
+            .then(response=> {
+                res.send(response.data.chart.result[0].indicators.quote[0].open)
+            })
+            .catch(error=>{
+                console.error(error)
+            })
+    }
+});
 
 app.listen(port, () =>
   console.log(`Server listenning on ${port}`),
