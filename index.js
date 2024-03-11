@@ -103,20 +103,6 @@ app.get('/daygainers', function(req,res){
 
 )
 
-app.get('/test', function(req,res){
-    if(req.query.symbol != null){
-        const symbol = req.query.symbol.toUpperCase()
-        const uri = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}`
-        axios.get(uri)
-            .then(response=> {
-                res.send(response.data.chart.result[0].indicators.quote[0].open)
-            })
-            .catch(error=>{
-                console.error(error)
-            })
-    }
-});
-
 app.listen(port, () =>
   console.log(`Server listenning on ${port}`),
 );

@@ -1,0 +1,50 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Boursewatcher API",
+    "description": "",
+    "version": "1.0.0"
+  },
+  "host": "localhost:3000",
+  "basePath": "/",
+  "schemes": ["http"],
+  "paths": {
+    "/stocks": {
+      "get": {
+        "description": "Retourne les informations pour une action donnée (ex: GOOGL, AAPL, ...) avec le logo de l'entreprise correspondante",
+        "parameters": [
+          {
+            "name": "symbol",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/search": {
+      "get": {
+        "description": "Permet de rechercher des actions, sur chaque action on retourne le logo de l'entreprise correspondante",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/daygainers": {
+      "get": {
+        "description": "Retourne la liste des meilleures actions du moment (en terme d'évolution) avec le logo de l'entreprise correspondante",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  }
+}
